@@ -1,0 +1,79 @@
+﻿@model EgitimOrg.Entity.ViewModel.ChatRoomModel
+<div class="chat-room-head">
+    <h3>Mesajlaşma</h3>
+    <form action="#" class="pull-right position">
+        <input type="text" placeholder="Search" class="form-control search-btn ">
+    </form>
+</div>
+@if (Model.msgs == null)
+{
+    <div class="row" style="margin-top:50px">
+        <div class="col-md-12" style="text-align:center"> <img class="img" src="~/images/message_box_512.png" width="75"></div>
+        <div style="text-align:center;margin-top:40px;">@Model.Icerik</div>
+
+    </div>
+}
+else
+{
+    <div class="pre-scrollable row" style="min-height:75vh">
+
+
+        @foreach (EgitimOrg.Entity.Entity.Message item in Model.msgs)
+        {
+            if (item.SenderId == Model.Gonderici)
+            {
+                <div class="group-rom">
+                    <div class="first-part odd" style="text-align:center">
+                        @item.User.Name
+                    </div>
+                    <div class="second-part">@item.SentMessage</div>
+                    <div class="third-part" style="font-size:10px;">@item.CreatedDate.ToShortDateString()</div>
+                </div>
+            }
+            else
+            {
+                <div class="group-rom">
+                    <div class="first-part" style="text-align:center">
+                        @item.User.Name
+                    </div>
+                    <div class="second-part">@item.SentMessage</div>
+                    <div class="third-part" style="font-size:10px;">@item.CreatedDate.ToShortDateString()</div>
+                </div>
+            }
+        }
+        <footer>
+            <div class="chat-txt">
+                <input type="text" class="form-control" id="sentmessage">
+            </div>
+            <div class="btn-group hidden-sm hidden-xs">
+                <button type="button" class="btn btn-white"><i class="fa fa-meh-o"></i></button>
+                <button type="button" class="btn btn-white"><i class=" fa fa-paperclip"></i></button>
+            </div>
+            <button class="btn btn-theme" id="Gonder">Gönder</button>
+        </footer>
+    </div>
+}
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Gonder").click(function () {
+            var obj = new Object();
+            obj.SenderId ='@Model.Gonderici'; //Benim Id mesajı gonderen kişi
+            obj.RecieverId ='@Model.Alici'; //KarşıdakiId mesajı alacak kişi
+            obj.SentMessage = $("#sentmessage").val(); //Gönderilen mesaj
+            $.ajax({
+                url: '/Message/SendMessage',
+                type: "POST",
+                data: obj,
+                success: function (result) {
+                    var element = document.querySelectorAll("[data-id='@Model.Alici']")[0];
+                    element.click();
+
+            }
+            });
+
+        });
+    });
+</script>
+

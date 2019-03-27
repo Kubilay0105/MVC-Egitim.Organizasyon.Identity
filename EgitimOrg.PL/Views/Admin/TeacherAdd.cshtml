@@ -1,0 +1,129 @@
+﻿@model EgitimOrg.Entity.ViewModel.TeacherAddViewModel
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "TeacherAdd";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#aextra').bind('change', function () {
+            var filename = $("#aextra").val();
+            console.log(filename);
+            if (/^\s*$/.test(filename)) {
+                $(".file-upload").removeClass('active');
+                $("#noFile").text("No file chosen...");
+            }
+            else {
+                $(".file-upload").addClass('active');
+                $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+                $("aextra").val(filename.replace("C:\\fakepath\\", ""));
+            }
+        });
+    });
+</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Admin/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <div class="row mt">
+            <div class="col-lg-12">
+                <h4><i class="fa fa-angle-right"></i> Advanced Form Validations</h4>
+
+                <div class="form-panel">
+                    <div class="form">
+                        @using (Html.BeginForm("TeacherAdd", "Admin", FormMethod.Post, new { encType = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="cmxform form-horizontal style-form" id="signupForm">
+                                <div class="col-lg-7">
+                                    <div class="form-group col-lg-12">
+                                        @Html.Label("Firstname", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", name = "firstname", id = "firstname"} })
+                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        @Html.Label("Lastname", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control", name = "lastname", id = "lastname"} })
+                                            @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                       @Html.Label("TC Kimlik No", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.EditorFor(model => model.IdentificationNo, new { htmlAttributes = new { @class = "form-control", name = "IdNo", id = "IdNo"} })
+                                            @Html.ValidationMessageFor(model => model.IdentificationNo, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", name = "email", id = "email"} })
+                                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        @Html.Label("Telefon", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", name = "phone", id = "phone" } })
+
+                                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+
+                                        @Html.Label("Adres", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.TextAreaFor(model => model.Adress, 4, 50, new { htmlAttributes = new { @class = "form-control", name = "adres", id = "adres" } })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        @Html.Label("Branş", htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-lg-10">
+                                            @Html.DropDownList("BranchId", new SelectList(ViewBag.Branches, "Id", "BranchName"), new { @class = "form-control", style = "width:200px"})
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="form-group">
+                                        @Html.Label("Dosya Yükle", htmlAttributes: new { @class = "control-label" })
+                                        <div class="file-upload">
+                                            <div class="file-select">
+                                                <div class="file-select-button" id="fileName">Choose File</div>
+                                                <div class="file-select-name" id="noFile">No file chosen...</div>
+                                                <input type="file" name="PictureUpload" id="aextra">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-lg-offset-4 col-lg-10">
+                                        <button class="btn btn-theme" type="submit">Kaydet</button>
+                                        <button class="btn btn-theme04" type="button">İptal</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+                <!-- /form-panel -->
+            </div>
+            <!-- /col-lg-12 -->
+        </div>
+    </section>
+</section>
+
+

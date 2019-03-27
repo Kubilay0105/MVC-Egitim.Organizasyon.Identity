@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<style type="text/css">
+    body {
+        padding-top: 20px;
+    }
+
+    .panel-body .btn:not(.btn-block) {
+        width: 120px;
+        margin-bottom: 10px;
+    }
+</style>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Admin/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+
+<section id="main-content">
+    <section class="wrapper">
+            <div class="container">
+                <div class="row" style="margin-top:10%;margin-left:8%">
+                    <div class="col-md-10">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <span class="glyphicon glyphicon-bookmark"></span> HIZLI MENÜ
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="col-xs-3 col-md-3">
+                                            <a href="/Admin/Teacher" class="btn btn-danger btn-lg" role="button"><span class="glyphicon glyphicon-question-sign"></span> <br />Öğretmenler</a>
+                                        </div>
+                                        <div class="col-xs-3 col-md-3">
+                                            <a href="/Admin/Student" class="btn btn-warning btn-lg" role="button"><span class="glyphicon glyphicon-pencil"></span> <br />Öğrenciler</a>
+                                        </div>
+                                        <div class="col-xs-3 col-md-3">
+                                            <a href="/Admin/Classroom" class="btn btn-primary btn-lg" role="button"><span class="glyphicon glyphicon-info-sign"></span> <br />Sınıflar</a>
+                                        </div>
+                                        <div class="col-xs-3 col-md-3">
+                                            <a href="/Admin/Branchs" class="btn btn-primary btn-lg" role="button"><span class="glyphicon glyphicon-list-alt"></span> <br />Branşlar</a>
+                                        </div>
+
+                                    </div>
+                                  
+                                </div>
+                                <a href="#" class="btn btn-success btn-lg btn-block" role="button"><span class="glyphicon glyphicon-globe"></span> Website</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+
+                </div>
+            </div>
+    </section>
+</section>

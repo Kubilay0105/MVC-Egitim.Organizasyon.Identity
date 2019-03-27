@@ -1,0 +1,130 @@
+﻿@model EgitimOrg.Entity.ViewModel.AllExamViewModel
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "Exams";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<style type="text/css">
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".editExam").click(function () {
+            var ID = $(this).data("id");
+            $(".modal-title").html("Sınav Düzenle");
+            $("#addoreditModal").modal('show');
+            $.ajax({
+                url: '/Academical/GetExamById?ExId=' + ID,//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                type: 'GET',
+                dataType: 'json',
+                success: function (model) {
+                    console.log('geldi');
+                    var obj = JSON.parse(model);
+                    $("#id").val(obj.Id);
+                    $("#tid").val(obj.TeacherId);
+                    $("#eclass").val(obj.ClassId);
+                    $("#ename").val(obj.ExamName);
+                    $("#edate").val(obj.StartDate);
+                    $("#edesc").val(obj.Description);
+                }
+            });
+        });
+
+        $("#addExam").click(function () {
+            $("#form")[0].reset();
+            $("id").val = 0;
+            $(".modal-title").html("Sınav Ekle");
+            $("#addoreditModal").modal('show');
+        });
+
+        $("#Save").click(function () {
+            var data = $("#SubmitForm").serialize();
+            console.log(data);
+            $.ajax({
+                type: 'POST',
+                url: '/Academical/AddorUpdateExam',
+                dataType: 'json',
+                data: data,
+                success: function (result) {
+                    alert("successss...");
+                    window.location.href = "/Academical/Exams";
+                }
+            });
+        });
+        $(".tableExam").on("click", ".deleteExam", function () {
+            $(".deleteExam").click(function () {
+                var ID = $(this).data("id");
+                $("#deleteExamModal").modal('show');
+                $("#id").val(ID);
+            });
+        });
+        $("#ConfirmDelete").click(function () {
+            var delId = $("#id").val();
+            $.ajax({
+                type: "POST",
+                url: '/Academical/ExamDelete',
+                data: { EID: delId },
+                success: function (result = true) {
+                    alert("successss...");
+                    window.location.href = "/Academical/Exam";
+                }
+            })
+        });
+
+    });
+</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Academical/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Sınavlar</h3><br /><br />
+        <div class="row mb">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <table class="table table-hover table-bordered results tableExam" style="margin-top:25px">
+                    <thead>
+                        <tr>
+                            <th class="col-md-2">#</th>
+                            <th class="col-md-2 col-xs-4">Sınav Adı</th>
+                            <th class="col-md-2 col-xs-3">Sınav Tarihi</th>
+                            <th class="col-md-3 col-xs-1">Açıklama</th>
+                            <th class="col-md-1 col-xs-1"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Exam item in Model.exams)
+                            {
+                                i++;
+                                <tr>
+                                    <th scope="row">@i</th>
+                                    <td>@item.ExamName</td>
+                                    <td>@item.StartDate.ToShortDateString()</td>
+                                    <td> @item.Description</td>
+
+                                    <td><a href="/Academical/AddQuestions?ClassId=@item.ClassId&ExamId=@item.Id" class="btn btn-info btn-sm" style="color:white"><span class="glyphicon glyphicon-edit"></span>Sınav Oluştur</a></td>
+
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </section>
+</section>

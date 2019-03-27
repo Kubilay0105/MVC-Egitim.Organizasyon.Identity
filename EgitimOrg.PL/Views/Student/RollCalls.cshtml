@@ -1,0 +1,62 @@
+﻿@model IEnumerable<EgitimOrg.Entity.Entity.RollCall>
+
+@{
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    ViewBag.Title = "RollCalls";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Sınavlar</h3><br /><br />
+        <div class="row mb">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <div style="margin-top:10px">
+                    <label><b>Toplam Devamsızlık Sayısı : @Model.Where(a=>a.IsHere==false).Count()</b></label>
+                </div>
+                <table class="table table-hover table-bordered results tableExam" style="margin-top:25px">
+                    <thead>
+                        <tr>
+                            <th class="col-md-6" style="text-align:center">Tarih</th>
+                            <th class="col-md-6 col-xs-4" style="text-align:center">Yoklama</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.RollCall item in Model)
+                            {
+                                i++;
+                                <tr>
+                                    <td style="text-align:center">@item.StartDate.ToShortDateString()</td>
+                                    @if (item.IsHere == true)
+                                    {
+                                        <td style="text-align:center"> <span class="fa fa-check" style="color:green"></span></td>
+                                    }
+                                    else
+                                    {
+                                        <td style="text-align:center"> <span class="fa fa-window-close" style="color:red"></span></td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </section>
+</section>

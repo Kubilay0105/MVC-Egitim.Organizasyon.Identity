@@ -1,0 +1,293 @@
+﻿@model EgitimOrg.Entity.ViewModel.AnnouncementModel
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "Announcement";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".editAnnouncement").click(function () {
+            var ID = $(this).data("id");
+            $(".modal-title").html("Duyuru Ekle");
+            $("#addoreditModal").modal('show');
+            $.ajax({
+                url: '/Academical/GetAnnoucementById?AnnId=' + ID,//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                type: 'GET',
+                dataType: 'json',
+                success: function (model) {
+                    console.log('geldi');
+                    var obj = JSON.parse(model);
+                    $("#aid").val(obj.Id);
+                    $("#tid").val(obj.TeacherId);
+                    $("#atitle").val(obj.Title);
+                    $("#asummary").val(obj.Summary);
+                    $("#acontent").val(obj.Content);
+                    $("#aclass").val(obj.ClassId);
+                    $("#atype").val(obj.TypeId);
+                    $("#aextra").val(obj.Extra);
+
+                }
+            });
+        });
+
+        $("#addAnnouncement").click(function () {
+            $("#form")[0].reset();
+            $("aid").val = 0;
+            $(".modal-title").html("Branş Ekle");
+            $("#addoreditModal").modal('show');
+        });
+
+        //$("#Save").click(function () {
+        //    var data = $("#SubmitForm").serialize();
+        //    var x = $('#aextra').val();
+        //    console.log(x);
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Academical/AddorUpdateAnnouncement',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+        //        dataType: 'json',
+        //        data: data,
+        //        success: function (result) {
+        //            alert("successss...");
+        //            window.location.href = "/Academical/Announcement";
+        //        }
+        //    });
+        //});
+        //$("#Save").click(function () {
+        //    //var data = $("#SubmitForm").serialize();
+        //    var an = new Object();
+        //    an.Id = $('#aid').val();
+
+        //    an.Extra = $('#aextra').val();
+        //    an.Title = $('#atitle').val();
+        //    an.Summary = $('#asummary').val();
+        //    an.TeacherId = $('#tid').val();
+        //    an.Content = $('#acontent').val();
+        //    an.ClassId = $('#aclass').val();
+        //    an.TypeId = $('#atype').val();
+
+        //    console.log(an);
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Academical/AddorUpdateAnnouncement',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+        //        dataType: 'json',
+        //        data: an,
+        //        success: function (result) {
+        //            alert("successss...");
+        //            window.location.href = "/Academical/Announcement";
+        //        }
+        //    });
+        //});
+        $(".tableAnn").on("click", ".deleteAnnouncement", function () {
+            $(".deleteAnnouncement").click(function () {
+                var ID = $(this).data("id");
+                //$("#form")[0].reset();
+                //$(".modal-title").html("Branş Ekle");
+                $("#deleteBranchModel").modal('show');
+                $("#xid").val(ID);
+            });
+        });
+        $("#ConfirmDelete").click(function () {
+            var delId = $("#xid").val();
+            $.ajax({
+                type: "POST",
+                url: '/Academical/AnnouncementDelete',
+                data: { BID: delId },
+                success: function (result = true) {
+                    alert("successss...");
+                    window.location.href = "/Academical/Announcement";
+                }
+            })
+        });
+        $('#aextra').bind('change', function () {
+            var filename = $("#aextra").val();
+            console.log(filename);
+            if (/^\s*$/.test(filename)) {
+                $(".file-upload").removeClass('active');
+                $("#noFile").text("No file chosen...");
+            }
+            else {
+                $(".file-upload").addClass('active');
+                $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+                $("aextra").val(filename.replace("C:\\fakepath\\", ""));
+            }
+        });
+
+    });
+</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Academical/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Öğrenciler</h3><br /><br />
+        <div class="row mb">
+            <!-- page start-->
+
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <div class="form-group pull-left">
+                    <input type="text" class="search form-control" placeholder="Öğrenci Ara">
+                </div>
+                <span class="counter pull-right"></span>
+                <table class="table table-hover table-bordered results tableAnn">
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th class="col-md-4 col-xs-4">Başlık</th>
+                            <th class="col-md-3 col-xs-3">Tür</th>
+                            <th class="col-md-1 col-xs-1"></th>
+                            <th class="col-md-1 col-xs-1"></th>
+
+                            <th class="col-md-1 col-xs-1"><a id="addAnnouncement" data-id="0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Ekle </a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Announcement item in Model.AnList)
+                            {
+                                i++;
+                                <tr>
+                                    <th scope="row">@i</th>
+                                    <td>@item.Title</td>
+                                    <td>@item.AnnouncementType.Name</td>
+                                    <td data-toggle="collapse" data-target="#@item.Id" class="clickable"><a class="btn btn-info btn-sm" style="color:white"><span class="glyphicon glyphicon-option-vertical"></span> Detay</a></td>
+                                    <td><a data-id="@item.Id" class="btn btn-danger btn-sm deleteAnnouncement" style="color:white"><span class="glyphicon glyphicon-remove-sign"></span> Sil</a></td>
+                                    <td><a id="editt" data-id="@item.Id" class="btn btn-warning btn-sm editAnnouncement" style="color:white"><span class="glyphicon glyphicon-edit"></span> Düzenle</a></td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <div id="@item.Id" class="collapse" >
+                                            <div class="col-md-12" style="word-wrap:break-word"><strong>İçerik : </strong> @item.Content</div>
+                                            <div class="col-md-12" style="word-wrap:break-word"><strong>Ek : </strong> @item.Extra</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="col-md-1"></div>
+            <!-- page end-->
+        </div>
+        <!-- /row -->
+    </section>
+    <!-- /wrapper -->
+</section>
+<div id="addoreditModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form" method="post" action="/Academical/AddorUpdateAnnouncement" enctype="multipart/form-data">
+                    <fieldset id="SubmitForm">
+                        @Html.HiddenFor(model => model.Id, new { @id = "aid", required = true })
+                        @Html.HiddenFor(model => model.TeacherId, new { @id = "tid", required = true })
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    @Html.Label("Sınıf", htmlAttributes: new { @class = "control-label" })
+                                    <div class="col-lg-12">
+                                        @Html.DropDownList("ClassId", new SelectList(ViewBag.MyClasses, "Id", "ClassName"), new { @class = "form-control", id = "aclass", style = "width:200px" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        @Html.Label("Duyuru Türü", htmlAttributes: new { @class = "control-label" })
+                                        <div class="col-lg-12">
+                                            @Html.DropDownList("TypeId", new SelectList(Model.AnTList, "Id", "Name"), new { @class = "form-control", id = "atype", style = "width:200px"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12"></div>
+                        <div class="form-group">
+                            @Html.Label("Başlık", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-lg-12">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", id = "atitle", required = true } })
+                                @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Özet", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-lg-12">
+                                @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control", id = "asummary", required = true } })
+                                @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            @Html.Label("İçerik", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-lg-12">
+                                <textarea class="form-control" name="Content" id="acontent" required></textarea>
+                                @*@Html.TextArea("Adress",new { htmlAttributes = new { @class = "form-control", name = "adres", id = "adres", required = true } })*@
+
+                                @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                            </div>
+                        </div>
+                        @*<label class="custom-file">
+                                <input type="file" id="file" class="custom-file-input">
+                                <span class="custom-file-control"></span>
+                            </label>*@
+                        <div class="form-group">
+                            @Html.Label("Dosya Yükle", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-lg-12">
+                                    <div class="file-upload">
+                                        <div class="file-select">
+                                            <div class="file-select-button" id="fileName">Choose File</div>
+                                            <div class="file-select-name" id="noFile">No file chosen...</div>
+                                            <input type="file" name="Extra" id="aextra">
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-lg-12"></div>
+
+                        <div class="form-group">
+                            <br /><br />
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                            <input id="Save" type="submit" class="btn btn-success" value="Add">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="deleteBranchModel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Duyuru Sil</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Duyuruyu silmek istiyor musunuz?</p>
+                <p class="text-warning"><small>Duyuru siliniyor...</small></p>
+            </div>
+            <fieldset id="delSubmitForm">
+                @Html.HiddenFor(model => model.Id, new { @id = "xid", required = true })
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Vazgeç">
+                    <input id="ConfirmDelete" type="submit" class="btn btn-danger" value="Sil">
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>

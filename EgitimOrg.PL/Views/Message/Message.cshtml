@@ -1,0 +1,83 @@
+﻿@model EgitimOrg.Entity.ViewModel.MessageViewModel
+
+@{
+    ViewBag.Title = "Message";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+@if (Model.role == "Student")
+{
+    <aside>
+        <div id="sidebar" class="nav-collapse ">
+            <!-- sidebar menu start-->
+            @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+            <!-- sidebar menu end-->
+        </div>
+    </aside>
+}
+else
+{
+    <aside>
+        <div id="sidebar" class="nav-collapse ">
+            <!-- sidebar menu start-->
+            @Html.Partial("/Views/Academical/PartialSidebar.cshtml")
+            <!-- sidebar menu end-->
+        </div>
+    </aside>
+}
+
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- page start-->
+        <div class="chat-room mt">
+            <aside class="mid-side" id="partmsg">
+                @Html.Action("Chat", "Message")
+            </aside>
+            @Html.HiddenFor(model => model.Userid, new { @id = "Usid" })
+            <aside class="right-side">
+                <div class="user-head">
+                    <a href="#" class="chat-tools btn-theme"><i class="fa fa-cog"></i> </a>
+                    <a href="#" class="chat-tools btn-theme03"><i class="fa fa-key"></i> </a>
+                </div>
+                <div class="invite-row">
+                    <h4 class="pull-left">Sohbetlerim</h4>
+                    <a href="#" class="btn btn-theme04 pull-right">Davet</a>
+                </div>
+                <ul class="chat-available-user">
+                    @foreach (EgitimOrg.Entity.Identity.ApplicationUser item in Model.userlist)
+                    {
+                        <li>
+                            <a data-id="@item.Id" class="btn btn-default messagebox" style="width:90%;height:55px;text-align:left">
+                                <img class="img-circle" src="~/images/Users/@item.Picture" width="32">
+                                &nbsp;&nbsp;<span> @item.Name @item.Surname</span>
+                                @*<span class="text-muted">1h:02m</span>*@
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </aside>
+        </div>
+        <!-- page end-->
+    </section>
+    <!-- /wrapper -->
+</section>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".messagebox").click(function () {
+            var FriendId = $(this).data("id");
+            var UserId = $("#Usid").val();
+            $.ajax({
+                type: "POST",
+                url: '/Message/Chat',
+                data: {
+                    gonderici: UserId,
+                    aliciid: FriendId
+                },
+                success: function (result = true) {
+                    $("#partmsg").html(result);
+                    //window.location.href = "/Academical/Announcement";
+                }
+            });
+        });
+    });
+</script>

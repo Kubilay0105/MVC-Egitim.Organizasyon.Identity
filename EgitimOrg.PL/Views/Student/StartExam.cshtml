@@ -1,0 +1,133 @@
+﻿@model EgitimOrg.Entity.ViewModel.StartExamViewModel
+
+@{
+    ViewBag.Title = "StartExam";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<style type="text/css">
+    .questionbox {
+        border-style: solid;
+        border-width: 1px;
+        border-color: black;
+        /*background-color: transparent;*/
+        border-radius: 5px;
+        min-height: 150px;
+        margin: 10px 20px 0 20px;
+        padding: 10px 20px 10px 20px;
+    }
+
+    .question {
+        border-style: groove;
+        border: 3px;
+        background-color: white;
+        min-height: 20px;
+        height: auto;
+        word-wrap: break-word;
+        /*margin: 20px 20px 20px 20px;*/
+    }
+
+    .answers {
+        border-style: groove;
+        border: 3px;
+        background-color: white;
+        min-height: 20px;
+        height: auto;
+        word-wrap: break-word;
+        margin-top: 20px;
+    }
+
+</style>
+<section id="main-content">
+    <section class="wrapper">
+        <div class="row mb">
+            <div class="col-md-10 form-panel pre-scrollable questions" style="min-height:500px;">
+                @{
+                    <h2 style="text-align:center">@Model.ExamName</h2>
+                    int i = 0;
+                    foreach (EgitimOrg.Entity.Entity.Question item in Model.Questions)
+                    {
+                        i++;
+                        <div data-id="@item.Id"class="questionbox">
+                            <div class="form-group question">
+                                <label name="quest"><b style="font-size:12px">Soru- @i )</b>&nbsp;@item.QuestionText</label>
+                            </div>
+                            <div class="answers">
+
+                                <div class="form-group">
+                                    <div>
+                                        <input type="radio" class="tanswer" id="opt1">
+                                        <label>@item.Option1</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <input type="radio" class="tanswer" id="opt2">
+                                        <label>@item.Option2</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <input type="radio" class="tanswer" id="opt3">
+                                        <label>@item.Option3</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <input type="radio" class="tanswer" id="opt4">
+                                        <label>@item.Option4</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+            </div>
+            <div class="col-md-2"></div>
+
+            <div class="col-md-12" style="text-align:center">
+                <a id="ExamFinish" data-id="@Model.ExamId" class="btn btn-success btn-lg center"><span class="fa fa-check"></span> Sınavı Bitir </a>
+            </div>
+        </div>
+    </section>
+</section>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ExamFinish").click(function () {
+            console.log("geldi");
+            var myarray = [];
+            $('.questionbox').each(function () {
+                var qtext = $(this).find(".question").find('label').text();
+                var Id = $(this).data("id");
+                var Ans = $(this).find(".answers").find('input[class=tanswer]:checked').next('label').text();
+                myarray.push({
+                    QuestionText: qtext,
+                    QuestionId: Id,
+                    StdAnswer:Ans
+                });
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/Student/StudentAnswers',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                //contextType: "application/json",
+                data: { model: myarray,ExamId:'@Model.ExamId' },
+                //traditional: true,
+                success: function (result = true) {
+                    window.location.href = "/Student/Index";
+                }
+            });
+            console.log(myarray);
+        });
+    });
+</script>

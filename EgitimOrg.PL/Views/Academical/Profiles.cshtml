@@ -1,0 +1,247 @@
+﻿@model  EgitimOrg.Entity.ViewModel.ProfileViewModel
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "Profiles";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<style type="text/css">
+    .separator {
+        border-right: 1px solid #dfdfe0;
+    }
+
+    .icon-btn-save {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-group {
+        margin-bottom: 10px;
+    }
+
+    .btn-save-label {
+        position: relative;
+        left: -12px;
+        display: inline-block;
+        padding: 6px 12px;
+        background: rgba(0,0,0,0.15);
+        border-radius: 3px 0 0 3px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnshare").click(function () {
+            var share = new Object();
+            share.Content = $('#sharing').val();
+            $.ajax({
+                type: 'POST',
+                url: '/Academical/Sharing',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: share,
+                success: function (result) {
+                    alert("successss...");
+                    window.location.href = "/Academical/Profiles";
+                }
+            });
+        });
+    });
+</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Academical/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="row content-panel">
+                    @*<div class="col-md-4 profile-text mt mb centered">
+                            <div class="right-divider hidden-sm hidden-xs">
+                                <h4>1922</h4>
+                                <h6>FOLLOWERS</h6>
+                                <h4>290</h4>
+                                <h6>FOLLOWING</h6>
+                                <h4>$ 13,980</h4>
+                                <h6>MONTHLY EARNINGS</h6>
+                            </div>
+                        </div>*@
+                    <div class="col-md-5 centered">
+                        <div class="profile-pic" style="margin-top:-10px">
+                            <p><img src="~/images/Users/@ViewBag.UserInfo.Picture" class="img-circle"></p>
+                        </div>
+                    </div>
+                    <!-- /col-md-4 -->
+                    <div class="col-md-5 profile-text">
+                        <h3>@ViewBag.UserInfo.Name @ViewBag.UserInfo.Surname</h3>
+                        <h6>Main Administrator</h6>
+                        <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC.</p>
+                        <br>
+                        <p><button class="btn btn-theme"><i class="fa fa-envelope"></i> Send Message</button></p>
+                    </div>
+                    <!-- /col-md-4 -->
+                    <div class="col-md-2 ">
+
+                    </div>
+                    <!-- /col-md-4 -->
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /col-lg-12 -->
+            <div class="col-lg-12 mt">
+                <div class="row content-panel">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active">
+                                <a data-toggle="tab" href="#overview">Overview</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#contact" class="contact-map">Contact</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#edit">Edit Profile</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /panel-heading -->
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div id="overview" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <textarea rows="5" id="sharing" class="form-control" placeholder="Bir Sorun Mu Var??"></textarea>
+                                        <div class="grey-style">
+                                            <div class="pull-left">
+                                                <button class="btn btn-sm btn-theme"><i class="fa fa-camera"></i></button>
+                                                <button class="btn btn-sm btn-theme"><i class="fa fa-map-marker"></i></button>
+                                            </div>
+                                            <div class="pull-right">
+                                                <input id="btnshare" type="submit" class="btn btn-sm btn-theme03" value="Gönder">
+                                            </div>
+                                        </div>
+                                        <div class="detailed mt">
+                                            <h4>PAYLAŞIMLAR</h4>
+                                            @foreach (EgitimOrg.Entity.Entity.Article item in Model.Shares)
+                                            {
+                                                <div class="recent-activity">
+                                                    <div class="activity-icon bg-theme"><i class="fa fa-question-circle"></i></div>
+                                                    <div class="activity-panel">
+                                                        <h5>@ViewBag.UserInfo.Name @ViewBag.UserInfo.Surname</h5>
+                                                        <h5>@item.CreatedDate.ToShortDateString()</h5>
+                                                        <p>@item.Content</p>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <!-- /recent-activity -->
+                                        </div>
+                                        <!-- /detailed -->
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <!-- /OVERVIEW -->
+                            </div>
+                            <!-- /tab-pane -->
+                            <div id="contact" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div id="map"></div>
+                                    </div>
+                                    <!-- /col-md-6 -->
+                                    <div class="col-md-6 detailed">
+                                        <h4>Location</h4>
+                                        <div class="col-md-8 col-md-offset-2 mt">
+                                            <p>
+                                                Postal Address<br /> PO BOX 12988, Sutter Ave<br /> Brownsville, New York.
+                                            </p>
+                                            <br>
+                                            <p>
+                                                Headquarters<br /> 844 Sutter Ave,<br /> 9003, New York.
+                                            </p>
+                                        </div>
+                                        <h4>Contacts</h4>
+                                        <div class="col-md-8 col-md-offset-2 mt">
+                                            <p>
+                                                Phone: +33 4898-4303<br /> Cell: 48 4389-4393<br />
+                                            </p>
+                                            <br>
+                                            <p>
+                                                Email: hello@dashiotheme.com<br /> Skype: UseDashio<br /> Website: http://Alvarez.is
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- /col-md-6 -->
+                                </div>
+                                <!-- /row -->
+                            </div>
+                            <!-- /tab-pane -->
+                            <div id="edit" class="tab-pane">
+                                <div class="row">
+                                    <div class="container bootstrap snippet">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-2">
+                                                <div class="panel panel-info">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">
+                                                            <span class="glyphicon glyphicon-th"></span>
+                                                            Şifre Değiştir
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-xs-6 col-sm-6 col-md-6 separator social-login-box">
+                                                                <br>
+                                                                <img alt="" class="img-thumbnail" src="~/images/Users/@ViewBag.UserInfo.Picture">
+                                                            </div>
+                                                            <div style="margin-top:80px;" class="col-xs-6 col-sm-6 col-md-6 login-box">
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+                                                                        <input class="form-control" type="password" placeholder="Current Password">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon"><span class="glyphicon glyphicon-log-in"></span></div>
+                                                                        <input class="form-control" type="password" placeholder="New Password">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-footer">
+                                                        <div class="row">
+                                                            <div class="col-xs-6 col-sm-6 col-md-6"></div>
+                                                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                                                <button class="btn icon-btn-save btn-success" type="submit">
+                                                                    <span class="btn-save-label"><i class="glyphicon glyphicon-floppy-disk"></i></span>save
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /col-lg-8 -->
+                                </div>
+                                <!-- /row -->
+                            </div>
+                            <!-- /tab-pane -->
+                        </div>
+                        <!-- /tab-content -->
+                    </div>
+                    <!-- /panel-body -->
+                </div>
+                <!-- /col-lg-12 -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </section>
+    <!-- /wrapper -->
+</section>
+

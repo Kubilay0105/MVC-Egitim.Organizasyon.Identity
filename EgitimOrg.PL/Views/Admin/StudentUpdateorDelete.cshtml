@@ -1,0 +1,173 @@
+﻿@model EgitimOrg.Entity.ViewModel.StudentUpdateModel
+@{
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    ViewBag.Title = "StudentUpdateorDelete";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#tckimlik").click(function () {
+            var tc = $("#OgrenciSorgulaByTc").val();
+            $.ajax({
+                url: '/Admin/GetStudenyByTc?TC=' + tc,//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                type: 'GET',
+                dataType: 'json',
+                success: function (model) {
+                    console.log('geldi');
+                    var obj = JSON.parse(model);
+                    $("#stdid").val(obj.StdId);
+                    $("#firstname").val(obj.Name);
+                    $("#lastname").val(obj.Surname);
+                    $("#IdNo").val(obj.IdentificationNo);
+                    $("#email").val(obj.Email);
+                    $("#adres").val(obj.Adress);
+                    console.log(obj.Name);
+                    $("#classid").val(obj.ClassId);
+                    $("#picture").val(obj.PictureUpload);
+
+                }
+            });
+        });
+        $("#guncelle").click(function () {
+            var data = $("#SubmitForm").serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/StudentUpdate',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: data,
+                success: function (result) {
+                    alert("successss...");
+                    window.location.href = "/Admin/Student";
+                }
+            });
+        });
+        $("#sil").click(function () {
+            var delId = $("#stdid").val();
+            $.ajax({
+                type: "POST",
+                url: '/Admin/StudentDelete',
+                data: { SID: delId },
+                success: function (result = true) {
+                    alert("successss...");
+                    window.location.href = "/Admin/Student";
+                }
+            })
+        });
+    });
+</script>
+
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Admin/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <div class="row mt">
+            <div class="col-lg-12">
+                <h4><i class="fa fa-angle-right"></i> Öğrenci Bilgileri Düzenle - Sil</h4>
+
+                <div class="form-panel">
+                    <div class="form">
+
+                        <div class="form-group col-lg-6">
+
+                            @Html.Label("TCKimlik No", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-lg-10">
+                                @Html.EditorFor(model => model.IdentificationNo, new { htmlAttributes = new { @class = "form-control", name = "tc", id = "OgrenciSorgulaByTc", required = true } })
+
+                                @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-2">
+                            <button id="tckimlik" class="btn btn-theme"> Sorgula </button>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-4"></div>
+                    <form id="SubmitForm" method="post">
+                        <div class="cmxform form-horizontal style-form" id="signupForm">
+                            <div class="col-lg-7">
+                                @Html.HiddenFor(model => model.StdId, new { @id = "stdid", required = true })
+
+                                <div class="form-group col-lg-12">
+                                    @Html.Label("Firstname", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-lg-10">
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", name = "firstname", id = "firstname", required = true } })
+
+                                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                                    </div>
+
+                                </div>
+                                <div class="form-group col-lg-12">
+
+                                    @Html.Label("Lastname", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-lg-10">
+                                        @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control", name = "lastname", id = "lastname", required = true } })
+
+                                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+
+                                    @Html.Label("TC Kimlik No", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-lg-10">
+                                        @Html.EditorFor(model => model.IdentificationNo, new { htmlAttributes = new { @class = "form-control", name = "IdNo", id = "IdNo", required = true } })
+
+                                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+
+                                    @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-lg-10">
+                                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", name = "email", id = "email", required = true } })
+
+                                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+
+                                    @Html.Label("Adres", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-lg-10">
+                                        <textarea class="form-control" name="Adress" id="adres" required></textarea>
+                                        @*@Html.TextArea("Adress",new { htmlAttributes = new { @class = "form-control", name = "adres", id = "adres", required = true } })*@
+
+                                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    @Html.Label("Branş", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-lg-10">
+                                        @Html.DropDownList("ClassId", new SelectList(ViewBag.Classes, "Id", "ClassName"), new { @class = "form-control", id = "classid", style = "width:200px", required = true })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    @Html.Label("Resim Yükle", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.PictureUpload, new { type = "file", id = "picture", name = "PictureUpload", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-4 col-lg-10">
+                                    <button id="guncelle" class="btn btn-theme" type="submit">Güncelle</button>
+                                    <button id="sil" class="btn btn-theme04" type="button">Sil</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- /form-panel -->
+        </div>
+        <!-- /col-lg-12 -->
+    </section>
+</section>
+
+

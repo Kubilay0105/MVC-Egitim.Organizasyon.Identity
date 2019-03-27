@@ -1,0 +1,267 @@
+﻿@model  EgitimOrg.Entity.ViewModel.ProfileViewModel
+
+@{
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    ViewBag.Title = "UserProfile";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+
+<style type="text/css">
+    .separator {
+        border-right: 1px solid #dfdfe0;
+    }
+
+    .icon-btn-save {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-group {
+        margin-bottom: 10px;
+    }
+
+    .btn-save-label {
+        position: relative;
+        left: -12px;
+        display: inline-block;
+        padding: 6px 12px;
+        background: rgba(0,0,0,0.15);
+        border-radius: 3px 0 0 3px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnshare").click(function () {
+            var share = new Object();
+            share.Content = $('#sharing').val();
+            $.ajax({
+                type: 'POST',
+                url: '/Student/Sharing',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: share,
+                success: function (result) {
+                    window.location.href = "/Student/MyProfile";
+                }
+            });
+        });
+    });
+</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="row mt" style="margin-left:10px;margin-right:10px;">
+            <div class="col-lg-8 mt">
+                <div class="row content-panel">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active">
+                                <a data-toggle="tab" href="#overview">Overview</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#sinifim" class="contact-map">Sınıfım</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#edit">Hakkında</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /panel-heading -->
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div id="overview" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div class="detailed mt">
+                                            <h4>PAYLAŞIMLAR</h4>
+                                            @foreach (EgitimOrg.Entity.Entity.Article item in Model.Shares)
+                                            {
+                                                <div class="recent-activity">
+                                                    <div class="activity-icon bg-theme"><i class="fa fa-question-circle"></i></div>
+                                                    <div class="activity-panel">
+                                                        <h5>@Model.ProfilSahibi.Name @Model.ProfilSahibi.Surname</h5>
+                                                        <h5>@item.CreatedDate.ToShortDateString()</h5>
+                                                        <p>@item.Content</p>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <!-- /recent-activity -->
+                                        </div>
+                                        <!-- /detailed -->
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <!-- /OVERVIEW -->
+                            </div>
+                            <!-- /tab-pane -->
+                            <div id="sinifim" class="tab-pane">
+                                <div class="row centered mb">
+                                    @foreach (EgitimOrg.Entity.Entity.Student item in Model.Sinifim)
+                                    {
+                                        <div class="col-md-6">
+                                            <ul class="my-friends">
+                                                <li>
+                                                    <div class="friends-pic"><a href="/Student/UserProfile?Uid=@item.UserId"><img class="img-circle" width="35" height="35" src="~/images/Users/@item.User.Picture">&nbsp;&nbsp;@item.Name @item.Surname</a></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
+                                </div>
+                                <!-- /row -->
+                            </div>
+                            <!-- /tab-pane -->
+                            <div id="edit" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-10">
+                                        @{
+        if (Model.Bio != null)
+        {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @Html.Label("Adı", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.ProfilSahibi.Name)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.Label("Soyadı", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.ProfilSahibi.Surname)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @Html.Label("Üniversite", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.Bio.University)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.Label("Bölüm", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.Bio.Department)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @Html.Label("Doğum Tarihi", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.Bio.CreatedDate)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.Label("Lise", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.Bio.HighSchool)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @Html.Label("Sınıf", htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-lg-10">
+                                                @Html.DisplayFor(model => model.ProfilSahibi.Classroom.ClassName)
+                                            </div>
+                                        </div>
+                                    </div>
+}
+else
+{
+                                    <h3 style="text-align:center">Henüz bilgiler girilmemiş....</h3>
+}
+                                        }
+
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                                <!-- /row -->
+                            </div>
+                            <!-- /tab-pane -->
+                        </div>
+                        <!-- /tab-content -->
+                    </div>
+                    <!-- /panel-body -->
+                </div>
+                <!-- /col-lg-12 -->
+            </div>
+            <div class="col-lg-1 mt"></div>
+            <div class="col-lg-3 mt">
+                <div class="row content-panel">
+                    <div class="col-md-12 centered">
+                        <div class="profile-pic" style="margin-top:-10px;text-align:center">
+                            <p><img src="~/images/Users/@Model.ProfilSahibi.User.Picture" class="img-circle"></p>
+                        </div>
+                    </div>
+                    <!-- /col-md-4 -->
+                    <div class="col-md-12 profile-text">
+                        <h3 style="text-align:center">@Model.ProfilSahibi.Name @Model.ProfilSahibi.Surname</h3>
+                        <h6 style="text-align:center">Öğrenci</h6>
+                        <br>
+                        <p style="text-align:center"><button class="btn btn-theme btnmesaj"><i class="fa fa-envelope"></i> Mesaj Gönder</button></p>
+                    </div>
+                    <!-- /col-md-4 -->
+                    <div class="col-md-12 ">
+
+                    </div>
+                    <!-- /col-md-4 -->
+                </div>
+                <!-- /row -->
+            </div>
+
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </section>
+    <!-- /wrapper -->
+</section>
+<div id="mesajmodal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Model.ProfilSahibi.Name adlı kullanıcıya mesajınız...</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea rows="5" id="sentmessage" class="form-control" placeholder="Mesajınızı Giriniz..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Vazgeç">
+                <input id="mesajgonder" type="submit" class="btn btn-danger" value="Gönder">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(".btnmesaj").click(function () {
+            $("#mesajmodal").modal('show');
+        });
+
+        $("#mesajgonder").click(function(){
+             var obj = new Object();
+             obj.SenderId ='@Model.MyUserId'; //Benim Id mesajı gonderen kişi
+             obj.RecieverId ='@Model.ProfilSahibi.UserId'; //KarşıdakiId mesajı alacak kişi
+             obj.SentMessage = $("#sentmessage").val(); //Gönderilen mesaj
+            $.ajax({
+                url: '/Message/EasyMessage',
+                type: "POST",
+                data: obj,
+                success: function (result) {
+                    window.location.href = "/Student/UserProfile?Uid=@Model.ProfilSahibi.UserId";
+            }
+            });
+        });
+    });
+</script>

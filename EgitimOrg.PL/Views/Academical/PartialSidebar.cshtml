@@ -1,0 +1,68 @@
+﻿@using Microsoft.AspNet.Identity.Owin
+@{ 
+    EgitimOrg.Entity.Identity.ApplicationUser app = new EgitimOrg.Entity.Identity.ApplicationUser();
+    app = ViewBag.UserInfo;
+}
+<ul class="sidebar-menu" id="nav-accordion">
+    <p class="centered"><a href="/Academical/Profiles"><img src="~/images/Users/@ViewBag.UserInfo.Picture" class="img-circle" width="80"></a></p>
+    <h5 class="centered">@app.Name @ViewBag.UserInfo.Surname</h5>
+    <li class="mt">
+        <a class="active" href="/Academical/Index">
+            <i class="fa fa-dashboard"></i>
+            <span>Anasayfa</span>
+        </a>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-desktop"></i>
+            <span>Duyurular</span>
+        </a>
+        <ul class="sub">
+            <li><a href="/Academical/AllAnnouncements">Duyurular</a></li>
+            <li><a href="/Academical/Announcement">Duyuru İşlemleri</a></li>
+        </ul>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-cogs"></i>
+            <span>Sınıflarım</span>
+        </a>
+        <ul class="sub">
+            @foreach (EgitimOrg.Entity.Entity.Classroom item in ViewBag.MyClasses)
+            {
+                <li><a href="@Url.Action("Classroom","Academical",new {@ClassId=item.Id })" name="ClassId">@item.ClassName</a></li>
+
+            }
+        </ul>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-cogs"></i>
+            <span>Yoklama</span>
+        </a>
+        <ul class="sub">
+            @foreach (EgitimOrg.Entity.Entity.Classroom item in ViewBag.MyClasses)
+            {
+                <li><a href="@Url.Action("RollCall","Academical",new {@ClassId=item.Id })" name="ClassId">@item.ClassName</a></li>
+
+            }
+        </ul>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-book"></i>
+            <span>Sınavlar</span>
+        </a>
+        <ul class="sub">
+            <li><a href="/Academical/Exams">Sınav İşlemleri</a></li>
+            <li><a href="/Academical/OnlineExams">Sınav Oluştur</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="/Academical/Profilim">
+            <i class="fa fa-envelope"></i>
+            <span>Profilim </span>
+            <span class="label label-theme pull-right mail-info"></span>
+        </a>
+    </li>
+</ul>

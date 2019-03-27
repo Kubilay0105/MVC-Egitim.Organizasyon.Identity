@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNet.Identity.Owin
+
+<ul class="sidebar-menu" id="nav-accordion">
+    <p class="centered"><a href="/Student/MyProfile"><img src="~/images/Users/@ViewBag.UserInfo.Picture" class="img-circle" width="80"></a></p>
+    <h5 class="centered">@ViewBag.UserInfo.Name @ViewBag.UserInfo.Surname</h5>
+    <li class="mt">
+        <a class="active" href="/Student/Index">
+            <i class="fa fa-dashboard"></i>
+            <span>Anasayfa</span>
+        </a>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-book"></i>
+            <span>Öğrenci</span>
+        </a>
+        <ul class="sub">
+            <li><a href="/Student/GetExams">Sonuçlarım</a></li>
+            <li><a href="/Student/OnlineExams">Online Sınav</a></li>
+            <li><a href="/Student/RollCalls">Devamsızlık</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="/Student/Forum">
+            <i class="fa fa-envelope"></i>
+            <span>Forum</span>
+            <span class="label label-theme pull-right mail-info"></span>
+        </a>
+    </li>
+</ul>

@@ -1,0 +1,147 @@
+﻿@model EgitimOrg.Entity.ViewModel.GetMyExamsViewModel
+
+@{
+    ViewBag.Title = "Exams";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<style type="text/css">
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+</style>
+
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Sınavlarım</h3><br /><br />
+        <div class="row mb">
+            <!-- page start-->
+
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <table class="table table-hover table-bordered results tableAnn" style="margin-top:50px">
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th class="col-md-4 col-xs-4">Sınav Adı</th>
+                            <th class="col-md-3 col-xs-3">Tarih</th>
+                            <th class="col-md-1 col-xs-1">Açıklama</th>
+                            <th class="col-md-1 col-xs-1"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Exam item in Model.exams)
+                            {
+                                i++;
+                                <tr>
+                                    <th scope="row">@i</th>
+                                    <td>@item.ExamName</td>
+                                    <td>@item.StartDate.ToShortDateString()</td>
+                                    <td>@item.Description</td>
+
+                                    <td data-toggle="collapse" data-target="#@item.Id" class="clickable"><a class="btn btn-info btn-sm" style="color:white"><span class="glyphicon glyphicon-option-vertical"></span> Detay</a></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <div id="@item.Id" class="collapse">
+                                            <div class="col-md-6"><strong>Puan : </strong> @Model.evaluations.Where(e=>e.ExamId==item.Id).Select(e=>e.Score).FirstOrDefault()</div>
+                                            <div class="col-md-6"><strong>Doğru : </strong>  @Model.evaluations.Where(e => e.ExamId == item.Id).Select(e => e.Correct).FirstOrDefault()</div>
+                                            <div class="col-md-6"><strong>Yanlış : </strong>  @Model.evaluations.Where(e => e.ExamId == item.Id).Select(e => e.Wrong).FirstOrDefault()</div>
+                                            <div class="col-md-6"><strong>Boş : </strong>  @Model.evaluations.Where(e => e.ExamId == item.Id).Select(e => e.Empty).FirstOrDefault()</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="col-md-1"></div>
+            <!-- page end-->
+        </div>
+        <!-- /row -->
+    </section>
+    <!-- /wrapper -->
+</section>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            $(".editExam").click(function () {
+                var ID = $(this).data("id");
+                $(".modal-title").html("Sınav Düzenle");
+                $("#addoreditModal").modal('show');
+                $.ajax({
+                    url: '/Academical/GetExamById?ExId=' + ID,//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (model) {
+                        console.log('geldi');
+                        var obj = JSON.parse(model);
+                        $("#id").val(obj.Id);
+                        $("#tid").val(obj.TeacherId);
+                        $("#eclass").val(obj.ClassId);
+                        $("#ename").val(obj.ExamName);
+                        $("#edate").val(obj.StartDate);
+                        $("#edesc").val(obj.Description);
+                    }
+                });
+            });
+
+            $("#addExam").click(function () {
+                $("#form")[0].reset();
+                $("id").val = 0;
+                $(".modal-title").html("Sınav Ekle");
+                $("#addoreditModal").modal('show');
+            });
+
+            $("#Save").click(function () {
+                var data = $("#SubmitForm").serialize();
+                console.log(data);
+                $.ajax({
+                    type: 'POST',
+                    url: '/Academical/AddorUpdateExam',
+                    dataType: 'json',
+                    data: data,
+                    success: function (result) {
+                        alert("successss...");
+                        window.location.href = "/Academical/Exams";
+                    }
+                });
+            });
+            $(".tableExam").on("click", ".deleteExam", function () {
+                $(".deleteExam").click(function () {
+                    var ID = $(this).data("id");
+                    $("#deleteExamModal").modal('show');
+                    $("#id").val(ID);
+                });
+            });
+            $("#ConfirmDelete").click(function () {
+                var delId = $("#id").val();
+                $.ajax({
+                    type: "POST",
+                    url: '/Academical/ExamDelete',
+                    data: { EID: delId },
+                    success: function (result = true) {
+                        alert("successss...");
+                        window.location.href = "/Academical/Exam";
+                    }
+                })
+            });
+
+        });
+    </script>*@

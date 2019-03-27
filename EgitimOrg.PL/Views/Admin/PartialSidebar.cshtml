@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNet.Identity.Owin
+
+<ul class="sidebar-menu" id="nav-accordion">
+    <p class="centered"><a href="profile.html"><img src="~/images/Users/default-person.png" class="img-circle" width="80"></a></p>
+    <h5 class="centered">@User.Identity.Name</h5>
+    <li class="mt">
+        <a class="active" href="/Admin/Index">
+            <i class="fa fa-dashboard"></i>
+            <span>Anasayfa</span>
+        </a>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-desktop"></i>
+            <span>Öğretmen İşlemleri</span>
+        </a>
+        <ul class="sub">
+            <li><a href="/Admin/Teacher">Öğretmenler</a></li>
+            <li><a href="/Admin/TeacherAdd">Öğretmen Ekle</a></li>
+        </ul>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-cogs"></i>
+            <span>Sınıf İşlemleri</span>
+        </a>
+        <ul class="sub">
+            <li><a href="/Admin/Classroom">Sınıflar</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="/Admin/Branchs">
+            <i class="fa fa-envelope"></i>
+            <span>Branş İşlemleri </span>
+            <span class="label label-theme pull-right mail-info"></span>
+        </a>
+    </li>
+    <li class="sub-menu">
+        <a href="javascript:;">
+            <i class="fa fa-book"></i>
+            <span>Öğrenciler</span>
+        </a>
+        <ul class="sub">
+            <li><a href="/Admin/Student">Öğrenciler</a></li>
+            <li><a href="/Admin/StudentAdd">Öğrenci Ekle</a></li>
+            <li><a href="/Admin/StudentUpdateorDelete">Öğrenci Düzenle/Sil</a></li>
+        </ul>
+    </li>
+</ul>

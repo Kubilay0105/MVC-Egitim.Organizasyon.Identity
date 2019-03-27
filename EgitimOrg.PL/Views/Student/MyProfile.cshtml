@@ -1,0 +1,371 @@
+﻿@model  EgitimOrg.Entity.ViewModel.ProfileViewModel
+
+@{
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    ViewBag.Title = "MyProfile";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+
+<style type="text/css">
+    .separator {
+        border-right: 1px solid #dfdfe0;
+    }
+
+    .icon-btn-save {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-group {
+        margin-bottom: 10px;
+    }
+
+    .btn-save-label {
+        position: relative;
+        left: -12px;
+        display: inline-block;
+        padding: 6px 12px;
+        background: rgba(0,0,0,0.15);
+        border-radius: 3px 0 0 3px;
+    }
+</style>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="row content-panel">
+                    <div class="col-md-5 centered">
+                        <div class="profile-pic" style="margin-top:-10px">
+                            <p><img src="~/images/Users/@ViewBag.UserInfo.Picture" class="img-circle"></p>
+                            <p style="text-align:center"><button class="btn btn-theme" id="profedit" data-id="@User.Identity.Name"><i class="fa fa-pencil"></i> Profil Düzenle</button></p>
+                        </div>
+                    </div>
+                    <!-- /col-md-4 -->
+                    <div class="col-md-5 profile-text">
+                        <h3>@ViewBag.UserInfo.Name @ViewBag.UserInfo.Surname</h3>
+                        <h6>Öğrenci</h6>
+                        @{
+                            if (Model.Bio != null)
+                            {
+                                <p>@Model.Bio.About</p>
+
+                            }
+                            else
+                            {
+                                <p>Bilgi girilmemiş.</p>
+
+                            }
+                        }
+                        <br>
+                    </div>
+                    <!-- /col-md-4 -->
+                    <div class="col-md-2 ">
+
+                    </div>
+                    <!-- /col-md-4 -->
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /col-lg-12 -->
+            <div class="col-lg-12 mt">
+                <div class="row content-panel">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active">
+                                <a data-toggle="tab" href="#overview">Profil</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#sinifim" class="contact-map">Sınıfım</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#edit">Şifre Değiştir</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /panel-heading -->
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div id="overview" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <textarea rows="5" id="sharing" class="form-control" placeholder="Bir Sorun Mu Var??"></textarea>
+                                        <div class="grey-style">
+                                            <div class="pull-left">
+                                                <button class="btn btn-sm btn-theme"><i class="fa fa-camera"></i></button>
+                                                <button class="btn btn-sm btn-theme"><i class="fa fa-map-marker"></i></button>
+                                            </div>
+                                            <div class="pull-right">
+                                                <input id="btnshare" type="submit" class="btn btn-sm btn-theme03" value="Gönder">
+                                            </div>
+                                        </div>
+                                        <div class="detailed mt">
+                                            <h4>PAYLAŞIMLAR</h4>
+                                            @foreach (EgitimOrg.Entity.Entity.Article item in Model.Shares)
+                                            {
+                                                <div class="recent-activity">
+                                                    <div class="activity-icon bg-theme"><i class="fa fa-question-circle"></i></div>
+
+                                                    <div class="activity-icon bg-theme"><a href="#" data-id="@item.Id" class="deleteshare" style="color:red"><i class="fa fa-times"></i></a></div>
+                                                    <div class="activity-panel">
+                                                        <h5>@ViewBag.UserInfo.Name @ViewBag.UserInfo.Surname</h5>
+                                                        <h5>@item.CreatedDate.ToShortDateString()</h5>
+                                                        <p>@item.Content</p>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <!-- /recent-activity -->
+                                        </div>
+                                        <!-- /detailed -->
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <!-- /OVERVIEW -->
+                            </div>
+                            <!-- /tab-pane -->
+                            <div id="sinifim" class="tab-pane">
+                                <div class="row centered mb">
+                                    @foreach (EgitimOrg.Entity.Entity.Student item in Model.Sinifim)
+                                    {
+                                        <div class="col-md-6">
+                                            <ul class="my-friends">
+                                                <li>
+                                                    <div class="friends-pic"><a href="/Student/UserProfile?Uid=@item.UserId"><img class="img-circle" width="35" height="35" src="~/images/Users/@item.User.Picture">&nbsp;&nbsp;@item.Name @item.Surname</a></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <!-- /tab-pane -->
+                            <div id="edit" class="tab-pane">
+                                <div class="row">
+                                    <div class="container bootstrap snippet">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-2">
+                                                <div class="panel panel-info">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">
+                                                            <span class="glyphicon glyphicon-th"></span>
+                                                            Şifre Değiştir
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-xs-6 col-sm-6 col-md-6 separator social-login-box">
+                                                                <br>
+                                                                <img alt="" class="img-thumbnail" src="~/images/Users/@ViewBag.UserInfo.Picture">
+                                                            </div>
+                                                            <div style="margin-top:80px;" class="col-xs-6 col-sm-6 col-md-6 login-box">
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+                                                                        <input class="form-control" type="password" placeholder="Current Password">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-addon"><span class="glyphicon glyphicon-log-in"></span></div>
+                                                                        <input class="form-control" type="password" placeholder="New Password">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-footer">
+                                                        <div class="row">
+                                                            <div class="col-xs-6 col-sm-6 col-md-6"></div>
+                                                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                                                <button class="btn icon-btn-save btn-success" type="submit">
+                                                                    <span class="btn-save-label"><i class="glyphicon glyphicon-floppy-disk"></i></span>save
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /col-lg-8 -->
+                                </div>
+                                <!-- /row -->
+                            </div>
+                            <!-- /tab-pane -->
+                        </div>
+                        <!-- /tab-content -->
+                    </div>
+                    <!-- /panel-body -->
+                </div>
+                <!-- /col-lg-12 -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </section>
+    <!-- /wrapper -->
+</section>
+<div id="editModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                @Html.HiddenFor(model => model.MyUserId, new { @id = "myuid", required = true })
+                @Html.HiddenFor(model => model.Bio.Id, new { @id = "bioid", required = true })
+                <div class="col-lg-12"></div>
+                <div class="form-group">
+
+                    @Html.Label("Hakkında", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-lg-12">
+                        <textarea class="form-control" name="" id="about" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Üniversite", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-lg-12">
+                        @Html.EditorFor(model => model.Bio.University, new { htmlAttributes = new { @class = "form-control", id = "university", required = true } })
+                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Bölüm", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-lg-12">
+                        @Html.EditorFor(model => model.Bio.Department, new { htmlAttributes = new { @class = "form-control", id = "department", required = true } })
+                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Lise", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-lg-12">
+                        @Html.EditorFor(model => model.Bio.HighSchool, new { htmlAttributes = new { @class = "form-control", id = "highschool", required = true } })
+                        @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Doğum Tarihi", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-lg-12">
+                        @Html.EditorFor(model => model.Bio.CreatedDate, new { htmlAttributes = new { @class = "form-control", type = "date", id = "birthdate", required = true } })
+                    </div>
+                </div>
+                <div class="col-lg-12"></div>
+
+                <div class="form-group">
+                    <br /><br />
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Vazgeç">
+                    <input id="Save" type="submit" class="btn btn-success" value="Kaydet">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Gönderi Sil</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Gönderiyi silmek istiyor musunuz?</p>
+                <p class="text-warning"><small>Gönderi siliniyor...</small></p>
+            </div>
+            <fieldset id="delSubmitForm">
+                @Html.HiddenFor(model => model.tobeDeleted, new { @id = "deletedid", required = true })
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Vazgeç">
+                    <input id="ConfirmDelete" type="submit" class="btn btn-danger" value="Sil">
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".deleteshare").click(function () {
+            var ID = $(this).data("id");
+            $("#deleteModal").modal('show');
+            $("#deletedid").val(ID);
+        });
+        $("#ConfirmDelete").click(function () {
+            var delId = $("#deletedid").val();
+            $.ajax({
+                type: "POST",
+                url: '/Student/DeleteShare',
+                data: { SID: delId },
+                success: function (result = true) {
+                    alert("successss...");
+                    window.location.href = "/Student/MyProfile";
+                }
+            })
+        });
+        $("#btnshare").click(function () {
+            var share = new Object();
+            share.Content = $('#sharing').val();
+            $.ajax({
+                type: 'POST',
+                url: '/Student/Sharing',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: share,
+                success: function (result) {
+                    window.location.href = "/Student/MyProfile";
+                }
+            });
+        });
+        $("#profedit").click(function () {
+            var uname = $(this).data("id");
+            $("#editModal").modal('show');
+            $.ajax({
+                url: '/Student/GetBIO',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                type: 'GET',
+                dataType: 'json',
+                success: function (bio) {
+                    console.log('geldi');
+                    var obj1 = JSON.parse(bio);
+                    $("#bioid").val(obj1.Id);
+                    $("#birthdate").val(obj1.CreatedDate);
+                    $("#university").val(obj1.University);
+                    $("#department").val(obj1.Department);
+                    $("#highschool").val(obj1.HighSchool);
+                    $("#about").val(obj1.About);
+                    console.log(obj1);
+
+                }
+            });
+        });
+        $("#Save").click(function () {
+            var obj = new Object();
+            obj.Id = $("#bioid").val();
+            obj.About = $("#about").val();
+            obj.CreatedDate = $("#birthdate").val();
+            obj.University = $("#university").val();
+            obj.Department = $("#department").val();
+            obj.HighSchool = $("#highschool").val();
+            obj.UserId = $("#myuid").val();
+
+
+            $.ajax({
+                url: '/Student/EditBio',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                type: 'POST',
+                dataType: 'json',
+                data: { model: obj },
+                success: function (result = true) {
+                    console.log('geldi');
+                    window.location.href = "/Student/MyProfile";
+                }
+            });
+        });
+    });
+</script>

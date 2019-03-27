@@ -1,0 +1,96 @@
+﻿@model IEnumerable<EgitimOrg.Entity.Entity.Evaluation>
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "AddExamScores";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Academical/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Not Giriş</h3><br /><br />
+        <div class="row mb">
+            <!-- page start-->
+
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+
+                <table class="table table-hover table-bordered results tableAnn" style="margin-top:50px">
+                    <thead>
+
+                        <tr>
+                            <th class="col-md-1 col-xs-1">#</th>
+                            <th class="col-md-2 col-xs-2">Ad</th>
+                            <th class="col-md-2 col-xs-2">Soyad</th>
+                            <th class="col-md-1 col-xs-1">Doğru</th>
+                            <th class="col-md-1 col-xs-1">Yanlış</th>
+                            <th class="col-md-1 col-xs-1">Boş</th>
+                            <th class="col-md-1 col-xs-1">Sonuç</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Student item in ViewBag.ExStudents)
+                            {
+                                i++;
+                        <tr data-id="@item.Id">
+                            <th scope="row">@i</th>
+                            <td>@item.Name</td>
+                            <td>@item.Surname</td>
+                            <td><input  class="form-control correct" type="text" style="width:50px" /></td>
+                            <td><input class="form-control wrong" type="text" style="width:50px" /></td>
+                            <td><input class="form-control empty" type="text" style="width:50px" /></td>
+                            <td><input class="form-control score" type="text" required style="width:50px"/></td>
+                            <td data-id="@Request.QueryString["ExamId"]" hidden></td>
+
+                        </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+                <div class="col-md-12" style="text-align:center"><input type="submit" class="btn btn-success btn-lg" id="gonder" value="Gönder"/></div>
+
+            </div>
+            <div class="col-md-1"></div>
+            <!-- page end-->
+        </div>
+        <!-- /row -->
+    </section>
+    <!-- /wrapper -->
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#gonder").click(function () {
+            $('.tableAnn > tbody > tr ').each(function () {
+                var an = new Object();
+                an.StudentId = $(this).data("id");
+                an.Correct = $(this).find("td").eq(2).find(":text").val();
+                an.Wrong = $(this).find("td").eq(3).find(":text").val();
+                an.Empty = $(this).find("td").eq(4).find(":text").val();
+                an.Score = $(this).find("td").eq(5).find(":text").val();
+                an.ExamId = $(this).find("td").eq(6).data("id");
+                $.ajax({
+                    type: 'POST',
+                    url: '/Academical/AddExamResults',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                    dataType: 'json',
+                    data: an,
+                    success: function (result) {
+                        window.location.href = "/Academical/Exams";
+                    }
+                    
+                });
+            });
+
+        });
+    });
+</script>

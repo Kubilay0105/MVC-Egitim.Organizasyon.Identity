@@ -1,0 +1,70 @@
+﻿@model EgitimOrg.Entity.ViewModel.AllExamViewModel
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "Exams";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<style type="text/css">
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+</style>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Sınavlar</h3><br /><br />
+        <div class="row mb">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <table class="table table-hover table-bordered results tableExam" style="margin-top:25px">
+                    <thead>
+                        <tr>
+                            <th class="col-md-2">#</th>
+                            <th class="col-md-2 col-xs-4">Sınav Adı</th>
+                            <th class="col-md-2 col-xs-3">Sınav Tarihi</th>
+                            <th class="col-md-3 col-xs-1">Açıklama</th>
+                            <th class="col-md-1 col-xs-1"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Exam item in Model.exams)
+                            {
+                                i++;
+                                <tr>
+                                    <th scope="row">@i</th>
+                                    <td>@item.ExamName</td>
+                                    <td>@item.StartDate.ToShortDateString()</td>
+                                    <td> @item.Description</td>
+                                    @if (Model.Evaluations.Where(e => e.ExamId == item.Id).Count() > 0)
+                                    {
+                                        <td><a class="btn btn-info btn-sm isDisabled" style="color:white"><span class="glyphicon glyphicon-edit"></span>Sınava Başla</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a href="/Student/StartExam?ExamId=@item.Id" class="btn btn-info btn-sm" style="color:white"><span class="glyphicon glyphicon-edit"></span>Sınava Başla</a></td>
+                                    }
+
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </section>
+</section>

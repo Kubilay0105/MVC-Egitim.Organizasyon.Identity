@@ -1,0 +1,176 @@
+﻿@model EgitimOrg.Entity.ViewModel.AddQuestionViewModel
+@{
+    ViewBag.Title = "AddQuestions";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Academical/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Öğrenciler</h3><br /><br />
+        <div class="row mb">
+            <!-- page start-->
+
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <div class="form-group pull-left">
+                    <input type="text" class="search form-control" placeholder="Öğrenci Ara">
+                </div>
+                <span class="counter pull-right"></span>
+                <table class="table table-hover table-bordered results tableAnn">
+                    <thead>
+
+                        <tr>
+                            <th class="col-md-1 col-xs-1">#</th>
+                            <th class="col-md-8 col-xs-8">Soru</th>
+                            <th class="col-md-1 col-xs-1"></th>
+                            <th class="col-md-1 col-xs-1"></th>
+
+                            <th class="col-md-1 col-xs-1"><a id="addQuestion" data-id="0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Ekle </a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Question item in Model.Questions)
+                            {
+                                i++;
+                                <tr>
+                                    <th scope="row">@i</th>
+                                    <td>@item.QuestionText</td>
+                                    <td data-toggle="collapse" data-target="#@item.Id" class="clickable"><a class="btn btn-info btn-sm" style="color:white"><span class="glyphicon glyphicon-option-vertical"></span> Cevaplar</a></td>
+                                    <td><a data-id="@item.Id" class="btn btn-danger btn-sm deleteAnnouncement" style="color:white"><span class="glyphicon glyphicon-remove-sign"></span> Sil</a></td>
+                                    <td><a id="editt" data-id="@item.Id" class="btn btn-warning btn-sm editAnnouncement" style="color:white"><span class="glyphicon glyphicon-edit"></span> Düzenle</a></td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <div id="@item.Id" class="collapse">
+                                            <div class="col-md-12"><strong>A     : </strong> @item.Option1</div>
+                                            <div class="col-md-12"><strong>B     : </strong> @item.Option2</div>
+                                            <div class="col-md-12"><strong>C     : </strong> @item.Option3</div>
+                                            <div class="col-md-12"><strong>D     : </strong> @item.Option4</div>
+                                            <div class="col-md-12"><strong>Doğru :</strong><b> @item.TAnswer</b> </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="col-md-1"></div>
+            <!-- page end-->
+        </div>
+        <!-- /row -->
+    </section>
+    <!-- /wrapper -->
+</section>
+<div id="addoreditModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                        @*@Html.HiddenFor(model => model.Id, new { @id = "aid", required = true })
+        @Html.HiddenFor(model => model.TeacherId, new { @id = "tid", required = true })*@
+                        <div class="col-lg-12"></div>
+                        <div class="form-group">
+
+                            @Html.Label("Soru", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-lg-12">
+                                <textarea class="form-control" name="QuestionText" id="qtext" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <input type="radio" name="tanswer" id="opt1">
+                                <input type="text" id="option1" name="answer" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <input type="radio" name="tanswer" id="opt2">
+                                <input type="text" id="option2" name="answer"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <input type="radio" name="tanswer" id="opt3">
+                                <input type="text" id="option3" name="answer"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <input type="radio" name="tanswer" id="opt4">
+                                <input type="text" id="option4" name="answer" />
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+            @Html.Label("Dosya Yükle", htmlAttributes: new { @class = "control-label" })
+            <div class="col-lg-12">
+                <div class="file-upload">
+                    <div class="file-select">
+                        <div class="file-select-button" id="fileName">Choose File</div>
+                        <div class="file-select-name" id="noFile">No file chosen...</div>
+                        <input type="file" name="Extra" id="aextra">
+                    </div>
+                </div>
+            </div>
+        </div>*@
+                        <div class="col-lg-12"></div>
+
+                        <div class="form-group">
+                            <br /><br />
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                            <input id="Savea" type="submit" class="btn btn-success" value="Ekle">
+                        </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#addQuestion").click(function () {
+            //$("#form")[0].reset();
+            //$("aid").val = 0;
+            $(".modal-title").html("Branş Ekle");
+            $("#addoreditModal").modal('show');
+        });
+        
+        $("#Savea").click(function () {
+            var obj = new Object();
+            obj.QuestionText = $("#qtext").val();
+            obj.Option1 = $("#option1").val();
+            obj.Option2 = $("#option2").val();
+            obj.Option3 = $("#option3").val();
+            obj.Option4 = $("#option4").val();
+            obj.TAnswer = $('input[name=tanswer]:checked').next('input[name=answer]').val();
+            obj.ExamId = '@Model.ExamId'; 
+            console.log(obj);
+            $.ajax({
+                type: "POST",
+                url: '/Academical/AddQuestions',
+                data: obj,
+                success: function (result = true) {
+                    alert("successss...");
+                    window.location.href = '/Academical/AddQuestions?ClassId='+'@Model.ClassId'+'&'+'ExamId='+'@Model.ExamId';
+                }
+            })
+        });
+    });
+</script>

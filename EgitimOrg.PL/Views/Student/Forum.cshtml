@@ -1,0 +1,182 @@
+﻿@model EgitimOrg.Entity.ViewModel.ForumViewModel
+
+@{
+    ViewBag.Title = "Forum";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Student/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+
+<section id="main-content">
+    <section class="wrapper">
+        <div class="row mt">
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <h5><span class="glyphicon glyphicon-question-sign"></span> Bir Sorun Mu var?</h5>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button id="btnShareModal" type="button" class="btn btn-primary btn-sm btn-block">
+                                        <span class="glyphicon glyphicon-share-alt"></span> Paylaşım Yap
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.UserId, new { @id = "shareid" })
+                    <div class="panel-body">
+                        @foreach (EgitimOrg.Entity.Entity.Article item in Model.Shares)
+                        {
+                            <div class="row">
+                                <div class="col-md-1" style="text-align:center">
+                                    <img class="img-rounded" width="55" height="45" src="~/images/Users/@item.User.Picture">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="col-md-12">
+                                        <a href="/Student/UserProfile?Uid=@item.UserId"><h5 class="product-name"><strong>@item.User.Name @item.User.Surname</strong></h5></a> <h4><small>@item.Content</small></h4><br />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" name="@item.Id" id="cmt" placeholder="Yorum Yap..."></textarea>
+                                        </div>
+                                        <div class="col-md-12" style="margin-top:5px">
+                                            <button type="button" data-id="@item.Id" class="btn btn-pill btn-info btncomment" data-toggle="collapse"><i class="glyphicon glyphicon-send"></i>&nbsp; Yorum Yap </button>&nbsp;
+                                            <button type="button" href="#@item.Id" class="btn btn-pill btn-light usercomments" data-toggle="collapse"><i class="glyphicon glyphicon-comment"></i>&nbsp; Yorumlar (@item.Comments.Count(c => c.IsDeleted == false))</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6 style="text-align:center"><i class="text-muted glyphicon glyphicon-calendar">&nbsp;<strong>@item.CreatedDate.ToShortDateString() @item.CreatedDate.DayOfWeek</strong></i></h6>
+                                </div>
+                            </div>
+                            <div class="collapse" id="@item.Id">
+                                <div class="col-md-12" style="font-size:14px"><strong>Yorumlar</strong></div>
+                                <div class="row pre-scrollable" style="margin-top:15px">
+                                    @{int i = 0;
+
+                                        foreach (EgitimOrg.Entity.Entity.Comment comm in item.Comments.OrderByDescending(c => c.CreatedDate))
+                                        {
+                                            i++;
+                                            if (i % 2 == 0)
+                                            {
+                                                <div class=" col-md-12">
+                                                    <h5><b>@comm.User.Name @comm.User.Surname</b></h5><h5>@comm.Content</h5>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class=" col-md-12" style="background-color:#d9edf7">
+                                                    <h5><b>@comm.User.Name @comm.User.Surname</b></h5><h5>@comm.Content</h5>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+
+                            </div>
+                            <hr>
+                        }
+                        <div class="row">
+                            <div class="text-center">
+                                <div class="col-xs-9">
+                                    <h6 class="text-right"></h6>
+                                </div>
+                                <div class="col-xs-3">
+                                    @*<button type="button" class="btn btn-default btn-sm btn-block">
+
+                                        </button>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row text-center">
+                            <div class="col-xs-9">
+                                <h4 class="text-right"> <strong></strong></h4>
+                            </div>
+                            <div class="col-xs-3">
+                                <button type="button" class="btn btn-success btn-block"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+<div id="ShareModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <p>Bir Sorun Mu var???</p>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <textarea rows="5" id="sharing" class="form-control" placeholder="Bir Sorun Mu Var??"></textarea>
+                        <div class="grey-style">
+                            <div class="pull-right">
+                                <input id="btnshare" type="submit" class="btn btn-sm btn-theme03" value="Gönder">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-warning" data-dismiss="modal" value="Vazgeç">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnShareModal").click(function () {
+            $("#ShareModal").modal('show');
+        });
+        $("#btnshare").click(function () {
+            var share = new Object();
+            share.Content = $('#sharing').val();
+            $.ajax({
+                type: 'POST',
+                url: '/Student/Sharing',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: share,
+                success: function (result) {
+                    window.location.href = "/Student/Forum";
+                }
+            });
+        });
+        $(".btncomment").click(function () {
+            var com = new Object();
+            com.UserId = $("#shareid").val();
+            com.ArticleId = $(this).data("id");
+            com.Content = $('textarea[name=' + com.ArticleId + ']').val();
+            //com.Content = $('#' + com.ArticleId).val();
+            $.ajax({
+                type: 'POST',
+                url: '/Student/AddComment',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: com,
+                success: function (result) {
+                    window.location.href = "/Student/Forum";
+                }
+            });
+        });
+    });
+</script>

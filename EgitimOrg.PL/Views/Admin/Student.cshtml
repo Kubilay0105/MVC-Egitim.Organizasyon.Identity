@@ -1,0 +1,123 @@
+﻿@model IEnumerable<EgitimOrg.Entity.Entity.Student>
+
+@{
+    <style>
+        body {
+            padding: 20px 20px;
+        }
+
+        .results tr[visible='false'],
+        .no-result {
+            display: none;
+        }
+
+        .results tr[visible='true'] {
+            display: table-row;
+        }
+
+        .counter {
+            padding: 8px;
+            color: #ccc;
+        }
+    </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".search").keyup(function () {
+            var searchTerm = $(".search").val();
+            var listItem = $('.results tbody').children('tr');
+            var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
+
+            $.extend($.expr[':'], {
+                'containsi': function (elem, i, match, array) {
+                    return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+                }
+            });
+
+            $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function (e) {
+                $(this).attr('visible', 'false');
+            });
+
+            $(".results tbody tr:containsi('" + searchSplit + "')").each(function (e) {
+                $(this).attr('visible', 'true');
+            });
+
+            var jobCount = $('.results tbody tr[visible="true"]').length;
+            $('.counter').text(jobCount + ' item');
+
+            if (jobCount == '0') { $('.no-result').show(); }
+            else { $('.no-result').hide(); }
+        });
+    });</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Admin/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>&nbsp;Öğrenciler</h3><br /><br />
+        <div class="row mb">
+            <!-- page start-->
+            
+            <div class="col-md-1"></div>
+            <div class="col-md-10 form-panel">
+                <div class="form-group pull-left">
+                    <input type="text" class="search form-control" placeholder="Öğrenci Ara">
+                </div>
+                <span class="counter pull-right"></span>
+                <table class="table table-hover table-bordered results">
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th class="col-md-5 col-xs-5">Ad</th>
+                            <th class="col-md-4 col-xs-4">Soyad</th>
+                            <th class="col-md-3 col-xs-3">TC Kimlik No</th>
+                        </tr>
+                        <tr class="warning no-result">
+                            <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int i = 0;
+                            foreach (EgitimOrg.Entity.Entity.Student item in Model)
+                        {
+                                i++;
+                <tr data-toggle="collapse" data-target="#@item.Id" class="clickable">
+                    <th scope="row">@i</th>
+                    <td>@item.Name</td>
+                    <td>@item.Surname</td>
+                    <td>@item.IdentificationNo</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div id="@item.Id" class="collapse">
+                            <div class="col-md-6"><strong>Mail : </strong> @item.User.Email</div>
+                            <div class="col-md-6"><strong>Telefon : </strong> @item.User.PhoneNumber</div>
+                            <div class="col-md-6"><strong>Adres : </strong> @item.Adress</div>
+                            <div class="col-md-6"><strong>Sınıf : </strong> @item.Classroom.ClassName</div>
+                        </div>
+                    </td>
+                </tr>
+                        }}
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="col-md-1"></div>            
+            <!-- page end-->
+        </div>
+        <!-- /row -->
+    </section>
+    <!-- /wrapper -->
+</section>
+

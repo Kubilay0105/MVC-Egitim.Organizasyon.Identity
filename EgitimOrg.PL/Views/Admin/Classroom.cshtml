@@ -1,0 +1,238 @@
+﻿@model EgitimOrg.Entity.Entity.Classroom
+
+@{
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    ViewBag.Title = "Classroom";
+    Layout = "~/Views/Shared/_LayoutAutomation.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Activate tooltip
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // Select/Deselect checkboxes
+        var checkbox = $('table tbody input[type="checkbox"]');
+        $("#selectAll").click(function () {
+            if (this.checked) {
+                checkbox.each(function () {
+                    this.checked = true;
+                });
+            } else {
+                checkbox.each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+        checkbox.click(function () {
+            if (!this.checked) {
+                $("#selectAll").prop("checked", false);
+            }
+        });
+
+        $("#addclassroom").click(function () {
+            $("#form")[0].reset();
+            $("id").val = 0;
+            $(".modal-title").html("Sınıf Ekle");
+            $("#addoreditModal").modal('show');
+        });
+        $("#Save").click(function () {
+            var data = $("#SubmitForm").serialize();
+            console.log(data);
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/AddorUpdateClassroom',//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                dataType: 'json',
+                data: data,
+                success: function (result) {
+                    alert("successss...");
+                    window.location.href = "/Admin/Classroom";
+                }
+            });
+        });
+        $(".editClassroom").click(function () {
+            var ID = $(this).data("id");
+            $(".modal-title").html("Sınıf Düzenle");
+            $("#addoreditModal").modal('show');
+            $.ajax({
+                url: '/Admin/GetClassById?CId=' + ID,//Ajax ile tetiklenecek ilgili adresi belirliyoruz.
+                type: 'GET',
+                dataType: 'json',
+                success: function (model) {
+                    console.log('geldi');
+                    var obj = JSON.parse(model);
+                    $("#id").val(obj.Id);
+                    $("#tid").val(obj.TeacherId);
+                    $("#classname").val(obj.ClassName);
+                    $("#cstart").val(obj.StartDate);
+                    $("#cfinish").val(obj.FinishDate);
+                    $("#desc").val(obj.Description);
+                }
+            });
+        });
+        $(".deleteClass").click(function () {
+            var ID = $(this).data("id");
+            $("#deleteClassModel").modal('show');
+            $("#id").val(ID);
+        });
+        $("#ConfirmDelete").click(function () {
+            var delId = $("#id").val();
+            console.log("geldi");
+            $.ajax({
+                type: "POST",
+                url: '/Admin/ClassDelete',
+                data: { CID: delId },
+                success: function (result = true) {
+                    alert("successss...");
+                    window.location.href = "/Admin/Classroom";
+                }
+            })
+        });
+    });
+</script>
+<aside>
+    <div id="sidebar" class="nav-collapse ">
+        <!-- sidebar menu start-->
+        @Html.Partial("/Views/Admin/PartialSidebar.cshtml")
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<section id="main-content">
+    <section class="wrapper">
+        @*<div class="row mt">*@
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h2><b>Sınıflar</b></h2>
+                    </div>
+                    <div class="col-md-2">
+                        <a id="addclassroom" data-id="0" class="btn btn-success" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i> <span>Sınıf Ekle</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <span class="custom-checkbox">
+                            <input type="checkbox" id="selectAll">
+                            <label for="selectAll"></label>
+                        </span>
+                    </th>
+                    <th>Sınıf</th>
+                    <th>Başlangıç Tarihi</th>
+                    <th>Bitiş Tarihi</th>
+                    <th>Öğretmen</th>
+                    <th>Açıklama</th>
+                    <th>Öğrenci Sayısı</th>
+                    <th>Ders</th>
+
+                </tr>
+            </thead>
+            @foreach (EgitimOrg.Entity.Entity.Classroom item in ViewBag.Classes)
+            {
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="custom-checkbox">
+                                <input type="checkbox" id="checkbox1" name="options[]" value="@item.Id">
+                                <label for="checkbox1"></label>
+                            </span>
+                        </td>
+                        <td>@item.ClassName</td>
+                        <td>@item.StartDate.ToShortDateString()</td>
+                        <td>@item.FinishDate.ToShortDateString()</td>
+                        <td>@item.Teacher.Name @item.Teacher.Surname</td>
+                        <td>@item.Description</td>
+                        <td>@item.Students.Count</td>
+                        <td>@item.Teacher.Branch.BranchName</td>
+
+                        <td>
+                            <a class="btn btn-warning btn-sm editClassroom" data-id="@item.Id" data-toggle="modal" style="color:white"><span class="glyphicon glyphicon-edit"></span>Düzenle</a>
+                            <a class="btn btn-danger btn-sm deleteClass" data-id="@item.Id" data-toggle="modal" style="color:white"><span class="glyphicon glyphicon-remove-sign"></span> Sil</a>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+        </table>
+        @*</div>*@
+    </section>
+</section>
+<div id="addoreditModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Employee</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset id="SubmitForm">
+                        @Html.HiddenFor(model => model.Id, new { @id = "id", required = true })
+
+                        <div class="form-group">
+                            @Html.Label("Sınıf Adı", htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.ClassName, new { htmlAttributes = new { @class = "form-control", name = "classname", id = "classname", required = true } })
+
+                            @*<input class=" form-control" id="firstname" name="firstname" type="text" />*@
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Başlangıç Tarihi", htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control vertical-center", id = "cstart", type = "date", required = true } })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Bitiş Tarihi", htmlAttributes: new { @class = "control-label " })
+                            @Html.EditorFor(model => model.FinishDate, new { htmlAttributes = new { @class = "form-control vertical-center", id = "cfinish", type = "date", required = true } })
+                        </div>
+                        @*<div class="form-group">
+                                @Html.Label("Öğretmen", htmlAttributes: new { @class = "control-label" })
+                                <select name="branch" class="form-control" style="width:200px" required>
+                                    <option value="">Öğretmen Seçiniz</option>
+                                    @foreach (EgitimOrg.Entity.Entity.Teacher item in ViewBag.Teachers)
+                                    {
+                                        @Html.ValueFor(model => model.TeacherId)
+                                        <option value="@item.Id">@item.Name @item.Surname</option>
+                                    }
+                                </select>
+                            </div>*@
+                        <div class="form-group">
+                            @Html.Label("Öğretmen", htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownList("TeacherId", new SelectList(ViewBag.Teachers, "Id", "Name"), new { @class = "form-control", id = "tid", style = "width:200px", required = true })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Açıklama", htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", name = "desc", id = "desc", required = true } })
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Vazgeç">
+                <input id="Save" type="submit" class="btn btn-success" value="Kaydet">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="deleteClassModel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Duyuru Sil</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Duyuruyu silmek istiyor musunuz?</p>
+                <p class="text-warning"><small>Duyuru siliniyor...</small></p>
+            </div>
+            <fieldset id="delSubmitForm">
+                @Html.HiddenFor(model => model.Id, new { @id = "id", required = true })
+
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Vazgeç">
+                    <input id="ConfirmDelete" type="submit" class="btn btn-danger" value="Sil">
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
